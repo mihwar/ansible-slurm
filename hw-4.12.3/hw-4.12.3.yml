@@ -1,0 +1,64 @@
+---
+- name: Homework 4.12.3
+  hosts: server
+  become: true
+  gather_facts: false
+  vars:
+    servers:
+      - name: production01
+        ip: 127.0.0.1
+      - name: production02
+        ip: 172.16.289.6
+      - name: production03
+        ip: 172.16.289.7
+
+  tasks:
+    - name: Installing python3
+      raw: apt -y update && apt install -y python3-minimal
+      args:
+        executable: /bin/bash
+
+    - name: Adding Ansible repo
+      ansible.builtin.apt_repository:
+        repo: ppa:ansible/ansible
+        update_cache: true
+
+    - name: Installing Ansible
+      ansible.builtin.apt:
+        name: ansible
+        state: latest
+    
+    - name: Copy private key
+      ansible.builtin.copy:
+        src: files/vagrant_test
+        dest: /home/vagrant/.ssh/vagrant_test
+        owner: vagrant
+        group: vagrant
+        mode: u=rw,g=,o=
+
+    - name: Copy public key
+      ansible.builtin.copy:
+        src: files/vagrant_test.pub
+        dest: /home/vagrant/.ssh/vagrant_test.pub
+        owner: vagrant
+        group: vagrant
+        mode: u=rw,g=r,o=r
+
+    - name: Making hosts file
+      ansible.builtin.template:
+        src: templates/hosts.j2
+        dest: /home/vagrant/hosts
+        owner: vagrant
+        group: vagrant
+        mode: 0644
+
+    - name: Copying playbook
+      ansible.builtin.copy:
+        src: files/playbook.yml
+        dest: /home/vagrant/playbook.yml
+        owner: vagrant
+        group: vagrant
+        mode: 0644
+
+    - name: Running remote ansible playbook
+      raw: /usr/bin/ansible-playbook -i /home/vagrant/hosts /home/vagrant/playbook.yml
