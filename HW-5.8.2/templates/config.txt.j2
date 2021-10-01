@@ -1,0 +1,27 @@
+flags = {% for item in params.flags -%}
+   {{ item }},
+{%- endfor %}
+
+internal_template = '{%- raw %}
+   {% for item in seq %}
+       {{ item.name }} = {{item.param}}
+   {% endfor %}
+{%- endraw %}'
+
+
+additional_flags = {%- for item in params.additional_flags | default([]) %}
+{{ item }},
+{%- else %}
+default
+{%- endfor %}
+
+{% set blocks %}
+block_name = {{ params.block_name }}
+block_flags = {{ params.block_flags }}
+{% endset %}
+
+
+{{ blocks }}
+
+
+{% include './templates/addons.j2' %}

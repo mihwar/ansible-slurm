@@ -1,0 +1,17 @@
+flags = zsh,psh,ssh,aux,
+internal_template = '
+   {% for item in seq %}
+       {{ item.name }} = {{item.param}}
+   {% endfor %}'
+
+
+additional_flags =default
+
+
+block_name = main_block
+block_flags = pph, szh
+
+
+
+addon_host = myhost.com
+addon_login = root

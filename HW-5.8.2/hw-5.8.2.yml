@@ -1,0 +1,26 @@
+---
+- name: Homework 5.8.2
+  hosts: local
+  become: true
+  become_user: dubrovnyi
+  gather_facts: false
+  vars:
+    addon_host: myhost.com
+    addon_login: root
+    params:
+      block_name: main_block
+      block_flags: pph, szh
+      flags:
+        - zsh
+        - psh
+        - ssh
+        - aux
+
+  tasks:
+    - name: Check jinja template
+      ansible.builtin.template:
+        src: templates/config.txt.j2
+        dest: /home/dubrovnyi/DOCS/Projects/Study/Ansible/ansible-slurm/ansible_course/3.other-systems-and-stacks/HW/HW-5.8.2/config.txt
+        owner: dubrovnyi
+        mode: 0644
+
